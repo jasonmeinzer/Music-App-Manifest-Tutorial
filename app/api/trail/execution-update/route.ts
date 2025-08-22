@@ -3,10 +3,15 @@ import { type NextRequest, NextResponse } from "next/server"
 const TRAIL_APP_ID = "0198cb43-44e5-7beb-a072-657ad165d79a"
 const TRAIL_ID = "0198cb37-deb0-75fb-9d7a-838cc5254637"
 const VERSION_ID = "0198cb37-deb8-7836-b6fc-f70ca72b39db"
-const API_KEY = "herd_DvYeJu3n57d7mCJaDmKGd8"
+const API_KEY = process.env.HERD_API_KEY
 
 export async function POST(request: NextRequest) {
   try {
+    if (!API_KEY) {
+      console.error("HERD_API_KEY environment variable is not set")
+      return NextResponse.json({ error: "API configuration error" }, { status: 500 })
+    }
+
     const { nodeId, transactionHash, walletAddress } = await request.json()
 
     console.log("[v0] Server-side execution update request:", { nodeId, transactionHash, walletAddress })
