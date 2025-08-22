@@ -28,6 +28,13 @@ export function CrowdfundInfo() {
   const lastFetchTimeRef = useRef<number>(0)
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes
+  const readDataRef = useRef(readData)
+  const addressRef = useRef(address)
+
+  useEffect(() => {
+    readDataRef.current = readData
+    addressRef.current = address
+  }, [readData, address])
 
   const fetchCrowdfundData = useCallback(async () => {
     const now = Date.now()
@@ -41,7 +48,7 @@ export function CrowdfundInfo() {
       setError(null)
       console.log("[v0] Fetching crowdfund data...")
 
-      const crowdfundResponse = await readData("0198cb37-debe-7283-a718-cd73b460a92d", {})
+      const crowdfundResponse = await readDataRef.current("0198cb37-debe-7283-a718-cd73b460a92d", {})
 
       if (crowdfundResponse?.error?.code === "429") {
         setCrowdfundData({
@@ -87,15 +94,15 @@ export function CrowdfundInfo() {
         return
       }
 
-      if (address) {
-        const donationResponse = await readData("0198cb37-debd-793b-b458-0243d4437624", {})
+      if (addressRef.current) {
+        const donationResponse = await readDataRef.current("0198cb37-debd-793b-b458-0243d4437624", {})
 
         if (donationResponse?.outputs) {
           setUserDonation(donationResponse.outputs.amount?.value || "0")
         }
       }
 
-      const donorsResponse = await readData("0198cb37-debe-7283-a718-cd746867e7c4", {})
+      const donorsResponse = await readDataRef.current("0198cb37-debe-7283-a718-cd746867e7c4", {})
 
       if (donorsResponse?.error?.code === "429") {
         setDonorsCount("1") // Use fallback value instead of showing error
@@ -122,7 +129,7 @@ export function CrowdfundInfo() {
     } finally {
       setLoading(false)
     }
-  }, [readData, address]) // Added proper dependencies
+  }, []) // Keep empty dependency array to prevent recreation
 
   useEffect(() => {
     fetchCrowdfundData()
@@ -136,7 +143,7 @@ export function CrowdfundInfo() {
         clearInterval(refreshIntervalRef.current)
       }
     }
-  }, [fetchCrowdfundData])
+  }, [fetchCrowdfundData]) // Add fetchCrowdfundData as dependency since it's now stable
 
   if (loading) {
     return (
