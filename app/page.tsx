@@ -73,7 +73,7 @@ const AppContent = () => {
     }
 
     loadHistory()
-  }, [address, getExecutionHistory])
+  }, [address]) // Removed getExecutionHistory from dependencies
 
   useEffect(() => {
     const fetchCrowdfundStatus = async () => {
@@ -103,10 +103,13 @@ const AppContent = () => {
     }
 
     fetchCrowdfundStatus()
-  }, [address, readData])
+  }, [address]) // Removed readData from dependencies
 
   const handleStepComplete = (stepNumber: number) => {
-    setCompletedSteps((prev) => new Set([...prev, stepNumber]))
+    setCompletedSteps((prev) => {
+      if (prev.has(stepNumber)) return prev // Don't update if already completed
+      return new Set([...prev, stepNumber])
+    })
   }
 
   const isStepEnabled = (stepNumber: number) => {
