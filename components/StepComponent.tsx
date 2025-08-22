@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,11 +52,6 @@ export function StepComponent({
   const { loading, executeStep } = useTrailAPI()
   const [inputs, setInputs] = useState<Record<string, string>>({})
   const [txHash, setTxHash] = useState<string>("")
-  const [collapsed, setCollapsed] = useState(isCompleted)
-
-  useEffect(() => {
-    setCollapsed(isCompleted)
-  }, [isCompleted])
 
   const handleInputChange = (inputName: string, value: string) => {
     setInputs((prev) => ({ ...prev, [inputName]: value }))
@@ -101,39 +96,6 @@ export function StepComponent({
 
   const canExecute = isEnabled && userInputs.every((input) => inputs[input.inputName]?.trim()) && isRefundEligible()
 
-  if (collapsed && isCompleted) {
-    return (
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-primary" />
-              <CardTitle className="text-lg">{title}</CardTitle>
-              <Badge variant="secondary">Completed</Badge>
-            </div>
-            <Button variant="ghost" size="sm" onClick={() => setCollapsed(false)}>
-              Expand
-            </Button>
-          </div>
-          {txHash && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Transaction:</span>
-              <a
-                href={`https://herd.eco/base/tx/${txHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline flex items-center gap-1"
-              >
-                {txHash.slice(0, 10)}...{txHash.slice(-8)}
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          )}
-        </CardHeader>
-      </Card>
-    )
-  }
-
   return (
     <Card className={`${isEnabled ? "border-primary/50" : "border-muted"} ${isCompleted ? "bg-primary/5" : ""}`}>
       <CardHeader>
@@ -142,12 +104,8 @@ export function StepComponent({
             {isCompleted && <CheckCircle className="w-5 h-5 text-primary" />}
             <CardTitle className="text-lg">{title}</CardTitle>
             {!hideStepNumber && <Badge variant={isEnabled ? "default" : "secondary"}>Step {stepNumber}</Badge>}
+            {isCompleted && <Badge variant="secondary">Completed</Badge>}
           </div>
-          {isCompleted && (
-            <Button variant="ghost" size="sm" onClick={() => setCollapsed(true)}>
-              Collapse
-            </Button>
-          )}
         </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
