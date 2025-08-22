@@ -11,11 +11,6 @@ export async function GET() {
         </linearGradient>
       </defs>
       <rect width="1200" height="630" fill="url(#bgGrad)" rx="24"/>
-      
-      <!-- Removed music note, keeping only the heart icon that renders properly -->
-      <g transform="translate(600,315)">
-        <path d="M0,-30 C-20,-50 -50,-50 -50,-20 C-50,10 0,50 0,50 C0,50 50,10 50,-20 C50,-50 20,-50 0,-30 Z" fill="white" opacity="0.8"/>
-      </g>
     </svg>
   `
 
@@ -25,7 +20,7 @@ export async function GET() {
     return new NextResponse(pngBuffer, {
       headers: {
         "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "public, max-age=0, no-cache", // Disabled caching to ensure immediate updates
       },
     })
   } catch (error) {
