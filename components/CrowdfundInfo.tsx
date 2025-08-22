@@ -26,6 +26,8 @@ export function CrowdfundInfo() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const lastFetchTimeRef = useRef<number>(0)
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes
 
   const fetchCrowdfundData = useCallback(async () => {
     const now = Date.now()
@@ -124,7 +126,17 @@ export function CrowdfundInfo() {
 
   useEffect(() => {
     fetchCrowdfundData()
-  }, [fetchCrowdfundData]) // Added fetchCrowdfundData back as dependency since it's now stable
+
+    refreshIntervalRef.current = setInterval(() => {
+      fetchCrowdfundData()
+    }, REFRESH_INTERVAL)
+
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current)
+      }
+    }
+  }, [fetchCrowdfundData])
 
   if (loading) {
     return (
@@ -163,7 +175,8 @@ export function CrowdfundInfo() {
           <Badge variant={isActive ? "default" : "secondary"}>{isActive ? "Active" : "Ended"}</Badge>
         </div>
         <CardDescription>
-          Crowdfund proceeds go to Music for Relief's $USDC charity address to use towards leveraging music to support disaster responses: 0x40...5b8D
+          Crowdfund proceeds go to Music for Relief's $USDC charity address to use towards leveraging music to support
+          disaster responses: 0x40...5b8D
         </CardDescription>
         {error && <div className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">⚠️ {error}</div>}
       </CardHeader>
