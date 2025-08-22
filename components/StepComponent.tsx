@@ -50,32 +50,25 @@ export function StepComponent({
 }: StepComponentProps) {
   const { address } = useAccount()
   const { loading, executeStep } = useTrailAPI()
-  const [inputs, setInputs] = useState<Record<string, string>>({})
+  const [inputValue, setInputValue] = useState("")
   const [txHash, setTxHash] = useState<string>("")
 
-  const handleInputChange = (inputName: string, value: string) => {
-    setInputs((prev) => ({ ...prev, [inputName]: value }))
+  const handleInputChange = (value: string) => {
+    setInputValue(value)
   }
 
   const handleExecute = async () => {
     try {
       const formattedInputs: Record<string, any> = {}
-
-      // Format inputs for API
-      userInputs.forEach((input) => {
-        const value = inputs[input.inputName]
-        if (value) {
-          // Don't apply decimals if alreadyAppliedDecimals > 0
-          formattedInputs[input.inputName] =
-            input.alreadyAppliedDecimals && input.alreadyAppliedDecimals > 0 ? value : value
-        }
-      })
+      if (userInputs[0] && inputValue) {
+        formattedInputs[userInputs[0].inputName] = inputValue
+      }
 
       const result = await executeStep(stepNumber, formattedInputs, nodeId)
       setTxHash(result.txHash)
       onComplete()
     } catch (error) {
-      console.error("[v0] Step execution failed:", error)
+      console.error("Step execution failed:", error)
       alert(`Step ${stepNumber} failed: ${error}`)
     }
   }
@@ -88,13 +81,10 @@ export function StepComponent({
     const goalReached = Number.parseFloat(totalRaised) >= Number.parseFloat(goal)
     const userHasDonated = Number.parseFloat(userDonation) > 0
 
-    // Refund is only available if:
-    // 1. Crowdfund is cancelled OR (expired AND goal not reached)
-    // 2. User has donated
     return (cancelled || (hasExpired && !goalReached)) && userHasDonated
   }
 
-  const canExecute = isEnabled && userInputs.every((input) => inputs[input.inputName]?.trim()) && isRefundEligible()
+  const canExecute = isEnabled && inputValue.trim() && isRefundEligible()
 
   return (
     <Card className={`${isEnabled ? "border-primary/50" : "border-muted"} ${isCompleted ? "bg-primary/5" : ""}`}>
@@ -112,27 +102,27 @@ export function StepComponent({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {userInputs.map((input) => (
-          <div key={input.inputName} className="space-y-2">
-            <Label htmlFor={input.inputName}>
-              {input.inputName
+        {userInputs[0] && (
+          <div className="space-y-2">
+            <Label htmlFor="input">
+              {userInputs[0].inputName
                 .split(".")
                 .pop()
                 ?.replace(/([A-Z])/g, " $1")
                 .replace(/^./, (str) => str.toUpperCase())}
             </Label>
             <Input
-              id={input.inputName}
-              type={input.valueType.includes("int") ? "number" : "text"}
-              placeholder={input.intent}
-              value={inputs[input.inputName] || ""}
-              onChange={(e) => handleInputChange(input.inputName, e.target.value)}
+              id="input"
+              type="number"
+              placeholder={userInputs[0].intent}
+              value={inputValue}
+              onChange={(e) => handleInputChange(e.target.value)}
               disabled={!isEnabled || loading}
               step="any"
               min="0"
             />
           </div>
-        ))}
+        )}
 
         <Button onClick={handleExecute} disabled={!canExecute || loading} className="w-full">
           {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
