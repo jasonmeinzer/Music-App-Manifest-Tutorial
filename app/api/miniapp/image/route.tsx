@@ -12,19 +12,16 @@ export async function GET() {
       </defs>
       <rect width="1200" height="630" fill="url(#bgGrad)" rx="24"/>
       
-      <!-- Music for Relief text -->
-      <text x="600" y="220" textAnchor="middle" fill="white" fontFamily="Arial, sans-serif" fontSize="72" fontWeight="bold">Music for</text>
-      <text x="600" y="320" textAnchor="middle" fill="white" fontFamily="Arial, sans-serif" fontSize="72" fontWeight="bold">Relief</text>
-      
-      <!-- Subtitle -->
-      <text x="600" y="380" textAnchor="middle" fill="white" fontFamily="Arial, sans-serif" fontSize="32" opacity="0.9">Crowdfund for Charity</text>
-      
-      <!-- Music notes decoration -->
-      <g transform="translate(300,450)">
-        <path d="M0,0 L0,90 Q0,105 15,105 Q30,105 30,90 L30,30 L90,45 L90,135 Q90,150 105,150 Q120,150 120,135 L120,15 L30,-15 Z" fill="white" opacity="0.6"/>
+      <!-- Added both heart and music note icons side by side -->
+      <g transform="translate(550,315)">
+        <path d="M0,-30 C-20,-50 -50,-50 -50,-20 C-50,10 0,50 0,50 C0,50 50,10 50,-20 C50,-50 20,-50 0,-30 Z" fill="white" opacity="0.8"/>
       </g>
-      <g transform="translate(780,450)">
-        <path d="M0,0 L0,90 Q0,105 15,105 Q30,105 30,90 L30,30 L90,45 L90,135 Q90,150 105,150 Q120,150 120,135 L120,15 L30,-15 Z" fill="white" opacity="0.6"/>
+      
+      <!-- Simple music note -->
+      <g transform="translate(650,315)">
+        <circle cx="0" cy="20" r="12" fill="white" opacity="0.8"/>
+        <rect x="12" y="-40" width="4" height="60" fill="white" opacity="0.8"/>
+        <path d="M16,-40 Q30,-35 30,-25 L30,-15 Q30,-10 25,-10 Q20,-10 20,-15 L20,-25 Q20,-30 16,-35 Z" fill="white" opacity="0.8"/>
       </g>
     </svg>
   `
