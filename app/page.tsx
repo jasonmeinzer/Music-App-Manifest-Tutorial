@@ -35,36 +35,18 @@ const AppContent = () => {
     }
   }, [switchChain, status])
 
-  // Call sdk.actions.ready() when app is ready
   useEffect(() => {
-    if (typeof window === "undefined") return
-
-    if (!isAppReady) {
-      const markAppReady = async () => {
-        try {
-          console.log("[v0] Attempting to call sdk.actions.ready()...")
-          await sdk.actions.ready()
-          setIsAppReady(true)
-          console.log("[v0] App marked as ready successfully!")
-        } catch (error) {
-          console.error("[v0] Failed to mark app as ready:", error)
-          try {
-            sdk.actions.ready()
-            console.log("[v0] App marked as ready (fallback method)")
-          } catch (fallbackError) {
-            console.error("[v0] Fallback ready() call also failed:", fallbackError)
-          }
-          setIsAppReady(true) // Still mark as ready to prevent infinite loading
-        }
+    // Only run on client side
+    if (typeof window !== "undefined") {
+      try {
+        console.log("[v0] Calling sdk.actions.ready() immediately...")
+        sdk.actions.ready()
+        console.log("[v0] SDK ready() called successfully!")
+      } catch (error) {
+        console.error("[v0] Failed to call sdk.actions.ready():", error)
       }
-
-      const timer = setTimeout(() => {
-        markAppReady()
-      }, 500)
-
-      return () => clearTimeout(timer)
     }
-  }, [isAppReady])
+  }, []) // Empty dependency array - run once on mount
 
   useEffect(() => {
     const autoConnect = async () => {
