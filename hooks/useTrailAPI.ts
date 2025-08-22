@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useAccount, useSendTransaction } from "wagmi"
 
 const TRAIL_APP_ID = "0198cb43-44e5-7beb-a072-657ad165d79a"
@@ -23,7 +23,6 @@ export function useTrailAPI() {
   const [executionHistory, setExecutionHistory] = useState<ExecutionHistory[]>([])
 
   const evaluateStep = async (stepNumber: number, userInputs: Record<string, any>, nodeId: string) => {
-    setLoading(true)
     try {
       const response = await fetch("/api/trail/evaluate", {
         method: "POST",
@@ -49,14 +48,13 @@ export function useTrailAPI() {
     } catch (error) {
       console.error("Evaluation error:", error)
       throw error
-    } finally {
-      setLoading(false)
     }
   }
 
   const executeStep = async (stepNumber: number, userInputs: Record<string, any>, nodeId: string) => {
     if (!address) throw new Error("Wallet not connected")
 
+    setLoading(true)
     try {
       // Get transaction calldata from server
       const evaluation = await evaluateStep(stepNumber, userInputs, nodeId)
@@ -97,6 +95,8 @@ export function useTrailAPI() {
     } catch (error) {
       console.error("Execution error:", error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -175,34 +175,37 @@ export function useTrailAPI() {
     return []
   }
 
-  const readData = async (nodeId: string, userInputs: Record<string, any> = {}) => {
-    try {
-      const response = await fetch("/api/trail/read", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nodeId,
-          userInputs,
-          walletAddress: address,
-        }),
-      })
+  const readData = useCallback(
+    async (nodeId: string, userInputs: Record<string, any> = {}) => {
+      try {
+        const response = await fetch("/api/trail/read", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nodeId,
+            userInputs,
+            walletAddress: address,
+          }),
+        })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        console.error("API request failed:", errorData.error)
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error("API request failed:", errorData.error)
+          return null
+        }
+
+        const data = await response.json()
+        console.log("[v0] Read response:", data)
+        return data
+      } catch (error) {
+        console.error("Failed to read data:", error)
         return null
       }
-
-      const data = await response.json()
-      console.log("[v0] Read response:", data)
-      return data
-    } catch (error) {
-      console.error("Failed to read data:", error)
-      return null
-    }
-  }
+    },
+    [address],
+  )
 
   return {
     loading,

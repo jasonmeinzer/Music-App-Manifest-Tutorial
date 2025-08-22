@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -25,15 +25,15 @@ export function CrowdfundInfo() {
   const [donorsCount, setDonorsCount] = useState<string>("0")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [lastFetchTime, setLastFetchTime] = useState<number>(0)
+  const lastFetchTimeRef = useRef<number>(0)
 
   const fetchCrowdfundData = useCallback(async () => {
     const now = Date.now()
-    if (now - lastFetchTime < 5000) {
+    if (now - lastFetchTimeRef.current < 5000) {
       setLoading(false)
       return
     }
-    setLastFetchTime(now)
+    lastFetchTimeRef.current = now
 
     try {
       setError(null)
@@ -120,11 +120,11 @@ export function CrowdfundInfo() {
     } finally {
       setLoading(false)
     }
-  }, []) // Removed all dependencies to prevent infinite loop
+  }, [readData, address]) // Added proper dependencies
 
   useEffect(() => {
     fetchCrowdfundData()
-  }, []) // Removed fetchCrowdfundData dependency to prevent infinite re-renders
+  }, [fetchCrowdfundData]) // Added fetchCrowdfundData back as dependency since it's now stable
 
   if (loading) {
     return (
