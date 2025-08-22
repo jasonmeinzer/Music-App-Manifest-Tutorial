@@ -120,11 +120,11 @@ export function CrowdfundInfo() {
     } finally {
       setLoading(false)
     }
-  }, [address, readData, lastFetchTime])
+  }, []) // Removed all dependencies to prevent infinite loop
 
   useEffect(() => {
     fetchCrowdfundData()
-  }, [fetchCrowdfundData]) // Remove address dependency so data loads immediately
+  }, []) // Removed fetchCrowdfundData dependency to prevent infinite re-renders
 
   if (loading) {
     return (

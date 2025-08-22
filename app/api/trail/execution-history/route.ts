@@ -3,12 +3,12 @@ import { type NextRequest, NextResponse } from "next/server"
 const TRAIL_APP_ID = "0198cb43-44e5-7beb-a072-657ad165d79a"
 const TRAIL_ID = "0198cb37-deb0-75fb-9d7a-838cc5254637"
 const VERSION_ID = "0198cb37-deb8-7836-b6fc-f70ca72b39db"
-const API_KEY = process.env.HERD_API_KEY
+const API_KEY = process.env.MusicAidAPI002 // Use the existing environment variable instead of HERD_API_KEY
 
 export async function POST(request: NextRequest) {
   try {
     if (!API_KEY) {
-      console.error("HERD_API_KEY environment variable is not set")
+      console.error("MusicAidAPI002 environment variable is not set") // Updated error message
       return NextResponse.json({ error: "API configuration error" }, { status: 500 })
     }
 
