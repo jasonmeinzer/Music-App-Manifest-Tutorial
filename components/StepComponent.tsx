@@ -54,10 +54,12 @@ export function StepComponent({
   const [txHash, setTxHash] = useState<string>("")
 
   const handleInputChange = (inputName: string, value: string) => {
+    console.log("[v0] Input change:", inputName, value)
     setInputs((prev) => ({ ...prev, [inputName]: value }))
   }
 
   const handleExecute = async () => {
+    console.log("[v0] Executing step:", stepNumber, inputs)
     try {
       const formattedInputs: Record<string, any> = {}
 
@@ -75,7 +77,7 @@ export function StepComponent({
       setTxHash(result.txHash)
       onComplete()
     } catch (error) {
-      console.error("Step execution failed:", error)
+      console.error("[v0] Step execution failed:", error)
       alert(`Step ${stepNumber} failed: ${error}`)
     }
   }
@@ -103,8 +105,9 @@ export function StepComponent({
           <div className="flex items-center gap-2">
             {isCompleted && <CheckCircle className="w-5 h-5 text-primary" />}
             <CardTitle className="text-lg">{title}</CardTitle>
-            {!hideStepNumber && <Badge variant={isEnabled ? "default" : "secondary"}>Step {stepNumber}</Badge>}
-            {isCompleted && <Badge variant="secondary">Completed</Badge>}
+            {!hideStepNumber && stepNumber === 3 && (
+              <Badge variant={isEnabled ? "default" : "secondary"}>Step {stepNumber}</Badge>
+            )}
           </div>
         </div>
         <CardDescription>{description}</CardDescription>
@@ -125,8 +128,13 @@ export function StepComponent({
               type={input.valueType.includes("int") ? "number" : "text"}
               placeholder={input.intent}
               value={inputs[input.inputName] || ""}
-              onChange={(e) => handleInputChange(input.inputName, e.target.value)}
+              onChange={(e) => {
+                console.log("[v0] Input onChange triggered:", input.inputName, e.target.value)
+                handleInputChange(input.inputName, e.target.value)
+              }}
               disabled={!isEnabled || loading}
+              step="any"
+              min="0"
             />
           </div>
         ))}
