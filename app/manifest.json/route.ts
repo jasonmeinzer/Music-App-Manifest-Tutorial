@@ -2,15 +2,15 @@ export async function GET() {
   const manifest = {
     accountAssociation: {
       header: "eyJmaWQiOjAsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhkNDY5NzM5NTM5MmZjZjU5NzIzZjU4ZGNjOGIxZjU5NTk2NzU4Nzg5In0",
-      payload: "eyJkb21haW4iOiJtdXNpYy1haWQudmVyY2VsLmFwcCJ9",
+      payload: "eyJkb21haW4iOiJ2MC1tdXNpY2Nyb3dkZnVuZGFwcC52ZXJjZWwuYXBwIn0",
       signature: "MHhkNDY5NzM5NTM5MmZjZjU5NzIzZjU4ZGNjOGIxZjU5NTk2NzU4Nzg5",
     },
     frame: {
       name: "Music Aid",
-      iconUrl: "https://music-aid.vercel.app/api/miniapp/icon",
-      splashImageUrl: "https://music-aid.vercel.app/api/miniapp/splash",
+      iconUrl: "https://v0-musiccrowdfundapp.vercel.app/api/miniapp/icon",
+      splashImageUrl: "https://v0-musiccrowdfundapp.vercel.app/api/miniapp/splash",
       splashBackgroundColor: "#8b5cf6",
-      homeUrl: "https://music-aid.vercel.app",
+      homeUrl: "https://v0-musiccrowdfundapp.vercel.app",
     },
     metadata: {
       name: "Music Aid",
@@ -21,7 +21,7 @@ export async function GET() {
         "Music Aid enables charitable crowdfunding for disaster relief through Music for Relief. Users can donate USDC tokens to support music-based disaster response efforts, with transparent blockchain tracking and refund capabilities if funding goals aren't met.",
       images: [
         {
-          src: "https://music-aid.vercel.app/api/miniapp/image",
+          src: "https://v0-musiccrowdfundapp.vercel.app/api/miniapp/image",
           type: "image/png",
         },
       ],
