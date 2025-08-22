@@ -118,12 +118,12 @@ const AppContent = () => {
     {
       stepNumber: 1,
       title: "Approve USDC",
-      description: "Approve the crowdfund contract to spend your USDC tokens",
+      description: "We need your approval to spend USDC from your wallet first...",
       nodeId: "0198cb37-debe-7283-a718-cd72690dc1ce",
       userInputs: [
         {
           inputName: "inputs.value",
-          intent: "amount of USDC to donate",
+          intent: "amount of USDC to allow",
           valueType: "uint256",
           alreadyAppliedDecimals: 6,
         },
@@ -228,11 +228,9 @@ const AppContent = () => {
         )}
 
         {/* Execution History */}
-        {status === "connected" && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-green-200 shadow-lg">
-            <ExecutionHistoryComponent />
-          </div>
-        )}
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl border border-green-200 shadow-lg">
+          <ExecutionHistoryComponent />
+        </div>
       </main>
 
       <footer className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-green-200 p-3">

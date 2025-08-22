@@ -3,27 +3,22 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ExternalLink, Users, User } from "lucide-react"
+import { ExternalLink, User } from "lucide-react"
 import { useTrailAPI, type ExecutionHistory } from "@/hooks/useTrailAPI"
 import { useAccount } from "wagmi"
 
 export function ExecutionHistoryComponent() {
   const { address } = useAccount()
-  const { getExecutionHistory, getCommunityHistory } = useTrailAPI()
+  const { getExecutionHistory } = useTrailAPI()
   const [userHistory, setUserHistory] = useState<ExecutionHistory[]>([])
-  const [communityHistory, setCommunityHistory] = useState<ExecutionHistory[]>([])
-  const [showCommunity, setShowCommunity] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchHistory = async () => {
       setLoading(true)
       try {
-        const [userHist, communityHist] = await Promise.all([getExecutionHistory(), getCommunityHistory()])
-
+        const userHist = await getExecutionHistory()
         setUserHistory(userHist)
-        setCommunityHistory(communityHist.slice(0, 10)) // Show latest 10
       } catch (error) {
         console.error("Failed to fetch execution history:", error)
       } finally {
@@ -34,10 +29,21 @@ export function ExecutionHistoryComponent() {
     fetchHistory()
   }, [address])
 
-  const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
-  const formatDate = (timestamp: string) => new Date(timestamp).toLocaleDateString()
+  const formatDateTime = (timestamp: string) => {
+    const date = new Date(timestamp)
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+  }
 
-  const historyToShow = showCommunity ? communityHistory : userHistory
+  const filteredHistory = userHistory
+    .filter((execution) => execution.stepNumber === 1 || execution.stepNumber === 2)
+    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
   if (loading) {
     return (
@@ -52,30 +58,21 @@ export function ExecutionHistoryComponent() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              {showCommunity ? <Users className="w-5 h-5" /> : <User className="w-5 h-5" />}
-              {showCommunity ? "Community Activity" : "Your Activity"}
-            </CardTitle>
-            <CardDescription>
-              {showCommunity ? "Recent donations from the community" : "Your transaction history for this crowdfund"}
-            </CardDescription>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setShowCommunity(!showCommunity)}>
-            {showCommunity ? "Show My Activity" : "Show Community"}
-          </Button>
+        <div>
+          <CardTitle className="flex items-center gap-2">
+            <User className="w-5 h-5" />
+            Your Activity
+          </CardTitle>
+          <CardDescription>Your transaction history for this crowdfund</CardDescription>
         </div>
       </CardHeader>
 
       <CardContent>
-        {historyToShow.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">
-            {showCommunity ? "No community activity yet" : "No transactions yet"}
-          </p>
+        {filteredHistory.length === 0 ? (
+          <p className="text-muted-foreground text-center py-4">No transactions yet</p>
         ) : (
           <div className="space-y-3">
-            {historyToShow.map((execution, index) => (
+            {filteredHistory.map((execution, index) => (
               <div
                 key={`${execution.executionId}-${index}`}
                 className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
@@ -83,8 +80,7 @@ export function ExecutionHistoryComponent() {
                 <div className="flex items-center gap-3">
                   <Badge variant="outline">Step {execution.stepNumber}</Badge>
                   <div>
-                    <p className="text-sm font-medium">{showCommunity && formatAddress(execution.walletAddress)}</p>
-                    <p className="text-xs text-muted-foreground">{formatDate(execution.timestamp)}</p>
+                    <p className="text-xs text-muted-foreground">{formatDateTime(execution.timestamp)}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
