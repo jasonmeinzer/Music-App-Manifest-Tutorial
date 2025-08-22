@@ -19,8 +19,15 @@ const AppContent = () => {
   const [isAppReady, setIsAppReady] = useState(false)
   const { address, status } = useAccount()
   const { switchChain } = useSwitchChain()
-  const { getExecutionHistory } = useTrailAPI()
+  const { getExecutionHistory, readData } = useTrailAPI()
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set())
+  const [crowdfundStatus, setCrowdfundStatus] = useState<{
+    cancelled: boolean
+    endTimestamp: string
+    goal: string
+    totalRaised: string
+    userDonation: string
+  } | null>(null)
 
   useEffect(() => {
     if (status === "connected") {
@@ -33,18 +40,25 @@ const AppContent = () => {
     if (!isAppReady) {
       const markAppReady = async () => {
         try {
+          console.log("[v0] Attempting to call sdk.actions.ready()...")
           await sdk.actions.ready()
           setIsAppReady(true)
-          console.log("App marked as ready!")
+          console.log("[v0] App marked as ready successfully!")
         } catch (error) {
-          console.error("Failed to mark app as ready:", error)
+          console.error("[v0] Failed to mark app as ready:", error)
+          try {
+            sdk.actions.ready()
+            console.log("[v0] App marked as ready (fallback method)")
+          } catch (fallbackError) {
+            console.error("[v0] Fallback ready() call also failed:", fallbackError)
+          }
           setIsAppReady(true) // Still mark as ready to prevent infinite loading
         }
       }
 
       const timer = setTimeout(() => {
         markAppReady()
-      }, 100)
+      }, 500)
 
       return () => clearTimeout(timer)
     }
@@ -69,13 +83,43 @@ const AppContent = () => {
     const loadHistory = async () => {
       if (address) {
         const history = await getExecutionHistory()
-        const completed = new Set(history.map((h) => h.stepNumber))
+        const completed = new Set(history.filter((h) => h.stepNumber > 0).map((h) => h.stepNumber))
         setCompletedSteps(completed)
       }
     }
 
     loadHistory()
   }, [address, getExecutionHistory])
+
+  useEffect(() => {
+    const fetchCrowdfundStatus = async () => {
+      if (address) {
+        try {
+          // Fetch crowdfund data
+          const crowdfundResponse = await readData("0198cb37-debe-7283-a718-cd73b460a92d", {})
+
+          // Fetch user donation amount
+          const donationResponse = await readData("0198cb37-debd-793b-b458-0243d4437624", {})
+
+          if (crowdfundResponse?.outputs) {
+            setCrowdfundStatus({
+              cancelled:
+                crowdfundResponse.outputs.cancelled?.value === "true" ||
+                crowdfundResponse.outputs.cancelled?.value === true,
+              endTimestamp: crowdfundResponse.outputs.endTimestamp?.value || "0",
+              goal: crowdfundResponse.outputs.goal?.value || "0",
+              totalRaised: crowdfundResponse.outputs.totalRaised?.value || "0",
+              userDonation: donationResponse?.outputs?.amount?.value || "0",
+            })
+          }
+        } catch (error) {
+          console.error("Failed to fetch crowdfund status:", error)
+        }
+      }
+    }
+
+    fetchCrowdfundStatus()
+  }, [address, readData])
 
   const handleStepComplete = (stepNumber: number) => {
     setCompletedSteps((prev) => new Set([...prev, stepNumber]))
@@ -91,10 +135,11 @@ const AppContent = () => {
       stepNumber: 1,
       title: "Approve USDC",
       description: "Approve the crowdfund contract to spend your USDC tokens",
+      nodeId: "0198cb37-debe-7283-a718-cd72690dc1ce",
       userInputs: [
         {
           inputName: "inputs.value",
-          intent: "the amount of USDC the user wants to donate in the next step",
+          intent: "amount of USDC to donate",
           valueType: "uint256",
           alreadyAppliedDecimals: 6,
         },
@@ -104,10 +149,11 @@ const AppContent = () => {
       stepNumber: 2,
       title: "Donate to Music for Relief",
       description: "Make your donation to support music relief efforts",
+      nodeId: "0198cb37-debd-793b-b458-02447de0c4a8",
       userInputs: [
         {
           inputName: "inputs.amount",
-          intent: "usdc to donate",
+          intent: "USDC to donate",
           valueType: "uint128",
           alreadyAppliedDecimals: 6,
         },
@@ -117,6 +163,7 @@ const AppContent = () => {
       stepNumber: 3,
       title: "Claim Refund (if necessary)",
       description: "Only available if the crowdfund goal is not reached by the end date",
+      nodeId: "0198cb37-dec0-7030-a48c-b3b247eeac13",
       userInputs: [],
       isOptional: true,
     },
@@ -134,9 +181,9 @@ const AppContent = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text text-transparent">
-                  Music for Relief
+                  Music Aid
                 </h1>
-                <p className="text-sm text-slate-600 font-medium">Crowdfund for Charity</p>
+                <p className="text-sm text-slate-600 font-medium">Songs for Recovery</p>
               </div>
             </div>
             <FarcasterConnect />
@@ -177,6 +224,8 @@ const AppContent = () => {
                   onComplete={() => handleStepComplete(step.stepNumber)}
                   isOptional={step.isOptional}
                   hideStepNumber={step.isOptional}
+                  nodeId={step.nodeId}
+                  crowdfundStatus={step.stepNumber === 3 ? crowdfundStatus : undefined}
                 />
               </div>
             ))}

@@ -10,6 +10,14 @@ import { Loader2, CheckCircle, ExternalLink } from "lucide-react"
 import { useTrailAPI } from "@/hooks/useTrailAPI"
 import { useAccount } from "wagmi"
 
+interface CrowdfundStatus {
+  cancelled: boolean
+  endTimestamp: string
+  goal: string
+  totalRaised: string
+  userDonation: string
+}
+
 interface StepComponentProps {
   stepNumber: number
   title: string
@@ -24,6 +32,8 @@ interface StepComponentProps {
   isCompleted: boolean
   onComplete: () => void
   hideStepNumber?: boolean
+  nodeId: string
+  crowdfundStatus?: CrowdfundStatus
 }
 
 export function StepComponent({
@@ -35,6 +45,8 @@ export function StepComponent({
   isCompleted,
   onComplete,
   hideStepNumber = false,
+  nodeId,
+  crowdfundStatus,
 }: StepComponentProps) {
   const { address } = useAccount()
   const { loading, executeStep } = useTrailAPI()
@@ -64,7 +76,7 @@ export function StepComponent({
         }
       })
 
-      const result = await executeStep(stepNumber, formattedInputs)
+      const result = await executeStep(stepNumber, formattedInputs, nodeId)
       setTxHash(result.txHash)
       onComplete()
     } catch (error) {
@@ -73,7 +85,21 @@ export function StepComponent({
     }
   }
 
-  const canExecute = isEnabled && userInputs.every((input) => inputs[input.inputName]?.trim())
+  const isRefundEligible = () => {
+    if (stepNumber !== 3 || !crowdfundStatus) return true
+
+    const { cancelled, endTimestamp, goal, totalRaised, userDonation } = crowdfundStatus
+    const hasExpired = Date.now() > Number.parseInt(endTimestamp) * 1000
+    const goalReached = Number.parseFloat(totalRaised) >= Number.parseFloat(goal)
+    const userHasDonated = Number.parseFloat(userDonation) > 0
+
+    // Refund is only available if:
+    // 1. Crowdfund is cancelled OR (expired AND goal not reached)
+    // 2. User has donated
+    return (cancelled || (hasExpired && !goalReached)) && userHasDonated
+  }
+
+  const canExecute = isEnabled && userInputs.every((input) => inputs[input.inputName]?.trim()) && isRefundEligible()
 
   if (collapsed && isCompleted) {
     return (
@@ -151,6 +177,22 @@ export function StepComponent({
           {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           {hideStepNumber ? "Execute" : `Execute Step ${stepNumber}`}
         </Button>
+
+        {stepNumber === 3 && crowdfundStatus && !isRefundEligible() && (
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-sm text-amber-800">
+              {crowdfundStatus.cancelled
+                ? "Refunds are available because the crowdfund was cancelled."
+                : Number.parseFloat(crowdfundStatus.userDonation) === 0
+                  ? "You haven't donated to this crowdfund yet."
+                  : Date.now() <= Number.parseInt(crowdfundStatus.endTimestamp) * 1000
+                    ? "Refunds will be available if the goal isn't reached by the end date."
+                    : Number.parseFloat(crowdfundStatus.totalRaised) >= Number.parseFloat(crowdfundStatus.goal)
+                      ? "Goal was reached - refunds are not available."
+                      : "Refunds are now available since the goal wasn't reached."}
+            </p>
+          </div>
+        )}
 
         {txHash && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

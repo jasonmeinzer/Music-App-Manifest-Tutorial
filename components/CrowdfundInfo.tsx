@@ -161,7 +161,7 @@ export function CrowdfundInfo() {
           <CardTitle className="text-xl">Music for Relief Crowdfund</CardTitle>
           <Badge variant={isActive ? "default" : "secondary"}>{isActive ? "Active" : "Ended"}</Badge>
         </div>
-        <CardDescription>Supporting music relief efforts through community donations</CardDescription>
+        <CardDescription>Crowdfund proceeds go to Music for Relief's $USDC charity address to use towards leveraging music to support disaster responses: 0x40a1C2065A6496DD4d3fA1862792c18Fc3F65b8D</CardDescription>
         {error && <div className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">⚠️ {error}</div>}
       </CardHeader>
 

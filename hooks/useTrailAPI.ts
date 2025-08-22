@@ -91,6 +91,8 @@ export function useTrailAPI() {
       const executionData = await executionResponse.json()
       console.log("[v0] Execution update response:", executionData)
 
+      await getExecutionHistory()
+
       return { txHash, executionId: executionData.executionId }
     } catch (error) {
       console.error("Execution error:", error)

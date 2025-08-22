@@ -8,6 +8,28 @@ export const metadata: Metadata = {
   title: "Music for Relief Crowdfund",
   description: "Support music relief efforts through charitable crowdfunding",
   generator: "v0.app",
+  openGraph: {
+    title: "Music for Relief Crowdfund",
+    description: "Support music relief efforts through charitable crowdfunding",
+    url: "https://music-aid.vercel.app",
+    siteName: "Music for Relief",
+    images: [
+      {
+        url: "https://music-aid.vercel.app/api/miniapp/image",
+        width: 600,
+        height: 400,
+        alt: "Music for Relief - Crowdfund for Charity",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Music for Relief Crowdfund",
+    description: "Support music relief efforts through charitable crowdfunding",
+    images: ["https://music-aid.vercel.app/api/miniapp/image"],
+  },
 }
 
 export default function RootLayout({
@@ -20,7 +42,7 @@ export default function RootLayout({
       <head>
         <meta
           name="fc:miniapp"
-          content='{"version":"1","imageUrl":"https://placeholder.svg?height=400&width=400&text=Music+for+Relief","button":{"title":"🎵 Donate","action":{"type":"launch_miniapp","name":"Music for Relief","url":"https://music-relief-crowdfund.vercel.app","splashImageUrl":"https://placeholder.svg?height=200&width=200&text=Music+Relief","splashBackgroundColor":"#22c55e"}}}'
+          content='{"version":"1","imageUrl":"https://music-aid.vercel.app/api/miniapp/image","iconUrl":"https://music-aid.vercel.app/api/miniapp/icon","button":{"title":"🎵 Donate","action":{"type":"launch_miniapp","name":"Music for Relief","url":"https://music-aid.vercel.app","splashImageUrl":"https://music-aid.vercel.app/api/miniapp/splash","splashBackgroundColor":"#22c55e"}}}'
         />
         <style>{`
 html {
