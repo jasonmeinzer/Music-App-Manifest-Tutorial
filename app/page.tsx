@@ -37,6 +37,8 @@ const AppContent = () => {
 
   // Call sdk.actions.ready() when app is ready
   useEffect(() => {
+    if (typeof window === "undefined") return
+
     if (!isAppReady) {
       const markAppReady = async () => {
         try {
