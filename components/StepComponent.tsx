@@ -54,12 +54,10 @@ export function StepComponent({
   const [txHash, setTxHash] = useState<string>("")
 
   const handleInputChange = (inputName: string, value: string) => {
-    console.log("[v0] Input change:", inputName, value)
     setInputs((prev) => ({ ...prev, [inputName]: value }))
   }
 
   const handleExecute = async () => {
-    console.log("[v0] Executing step:", stepNumber, inputs)
     try {
       const formattedInputs: Record<string, any> = {}
 
@@ -128,10 +126,7 @@ export function StepComponent({
               type={input.valueType.includes("int") ? "number" : "text"}
               placeholder={input.intent}
               value={inputs[input.inputName] || ""}
-              onChange={(e) => {
-                console.log("[v0] Input onChange triggered:", input.inputName, e.target.value)
-                handleInputChange(input.inputName, e.target.value)
-              }}
+              onChange={(e) => handleInputChange(input.inputName, e.target.value)}
               disabled={!isEnabled || loading}
               step="any"
               min="0"
