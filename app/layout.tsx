@@ -5,7 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Music for Relief Crowdfund",
+  title: "Music App Manifest Tutorial Demo",
   description: "Support music relief efforts through charitable crowdfunding",
   generator: "v0.app",
   openGraph: {
