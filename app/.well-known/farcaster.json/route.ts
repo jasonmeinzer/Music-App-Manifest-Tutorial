@@ -1,24 +1,5 @@
-export async function GET() {
-  const manifest = {
-    accountAssociation: {
-      header:
-        "eyJmaWQiOjg4ODUsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg5NzNjZTViYmM2MTg5N2EwQ0ZmQTI0RmM5MUI0QzFkNjg3NGM3ODk2In0",
-      payload: "eyJkb21haW4iOiJtdXNpY2FpZC52ZXJjZWwuYXBwIn0",
-      signature:
-        "MHg4MGYzY2I5MzAzM2RjZTlkNDA1ZjM4M2I4MWU3ZTIxNGI3OTRhMGNiMGZlNmFhNTIwM2IzMzU4MGVlOWNjZjRmMWE4YTc5ODAyZDc5ODU0MjlhNDczMzA1ZjU5OGY0Y2I4MWVhOTc1NjlkYTI5NTVjZTI3MTBhNTQxMDMyMjBmZTFj",
-    },
-    frame: {
-      version: "1",
-      name: "Music Aid - Songs for Recovery",
-      iconUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/icon",
-      homeUrl: "music-app-manifest-tutorial.vercel.appp",
-      imageUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/image",
-      buttonTitle: "Donate",
-      splashImageUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/splash",
-      splashBackgroundColor: "#8b5cf6",
-      webhookUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/webhook",
-    },
-  }
+import { NextResponse } from 'next/server'
 
-  return Response.json(manifest)
+export async function GET() {
+  return NextResponse.redirect('https://api.farcaster.xyz/miniapps/hosted-manifest/0198f373-46d9-4330-f9b5-d51b4a4b4a50')
 }
