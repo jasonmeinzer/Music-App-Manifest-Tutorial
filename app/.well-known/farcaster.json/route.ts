@@ -10,13 +10,13 @@ export async function GET() {
     frame: {
       version: "1",
       name: "Music Aid - Songs for Recovery",
-      iconUrl: "https://musicaid.vercel.app/api/miniapp/icon",
-      homeUrl: "https://musicaid.vercel.app",
-      imageUrl: "https://musicaid.vercel.app/api/miniapp/image",
+      iconUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/icon",
+      homeUrl: "music-app-manifest-tutorial.vercel.appp",
+      imageUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/image",
       buttonTitle: "Donate",
-      splashImageUrl: "https://musicaid.vercel.app/api/miniapp/splash",
+      splashImageUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/splash",
       splashBackgroundColor: "#8b5cf6",
-      webhookUrl: "https://musicaid.vercel.app/api/miniapp/webhook",
+      webhookUrl: "music-app-manifest-tutorial.vercel.app/api/miniapp/webhook",
     },
   }
 
