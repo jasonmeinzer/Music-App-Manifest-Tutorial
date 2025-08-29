@@ -168,7 +168,7 @@ const AppContent = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text text-transparent">
-                  Music Aid
+                  Music App Manifest Demo
                 </h1>
                 <p className="text-sm text-slate-600 font-medium">Songs for Recovery</p>
               </div>
