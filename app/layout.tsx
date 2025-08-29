@@ -1,6 +1,4 @@
-Perfect! Here's your **complete updated layout.tsx** file with ALL the URLs changed to your new domain:
 
-```typescript
 import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
@@ -59,9 +57,3 @@ html {
     </html>
   )
 }
-```
-
-**Just copy this entire thing and replace your whole layout.tsx file!** Then commit and wait for Vercel to redeploy. 🎵
-
-Confidence? 10
-RAG? Yes
