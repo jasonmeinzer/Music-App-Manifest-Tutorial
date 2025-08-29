@@ -1,3 +1,6 @@
+Perfect! Here's your **complete updated layout.tsx** file with ALL the URLs changed to your new domain:
+
+```typescript
 import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
@@ -5,20 +8,20 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Music App Manifest Tutorial Demo",
-  description: "Support music relief efforts through charitable crowdfunding",
+  title: "Music App Manifest - Tutorial Demo",
+  description: "Tutorial demo for manifest creation",
   generator: "v0.app",
   openGraph: {
-    title: "Music for Relief Crowdfund",
-    description: "Support music relief efforts through charitable crowdfunding",
-    url: "https://musicaid.vercel.app",
-    siteName: "Music for Relief",
+    title: "Music App Manifest Tutorial",
+    description: "Tutorial demo for manifest creation",
+    url: "https://music-app-manifest-tutorial.vercel.app",
+    siteName: "Music App Manifest",
     images: [
       {
-        url: "https://musicaid.vercel.app/api/miniapp/image",
+        url: "https://music-app-manifest-tutorial.vercel.app/api/image",
         width: 600,
         height: 400,
-        alt: "Music for Relief - Crowdfund for Charity",
+        alt: "Music App Manifest - Tutorial Demo",
       },
     ],
     locale: "en_US",
@@ -26,9 +29,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Music for Relief Crowdfund",
-    description: "Support music relief efforts through charitable crowdfunding",
-    images: ["https://musicaid.vercel.app/api/miniapp/image"],
+    title: "Music App Manifest Tutorial",
+    description: "Tutorial demo for manifest creation",
+    images: ["https://music-app-manifest-tutorial.vercel.app/api/image"],
   },
 }
 
@@ -42,7 +45,7 @@ export default function RootLayout({
       <head>
         <meta
           name="fc:miniapp"
-          content='{"version":"1","imageUrl":"https://musicaid.vercel.app/api/miniapp/image","iconUrl":"https://musicaid.vercel.app/api/miniapp/icon","button":{"title":"🎵 Donate","action":{"type":"launch_miniapp","name":"Music for Relief","url":"https://musicaid.vercel.app","splashImageUrl":"https://musicaid.vercel.app/api/miniapp/splash","splashBackgroundColor":"#22c55e"}}}'
+          content='{"version":"1","imageUrl":"https://music-app-manifest-tutorial.vercel.app/api/image","iconUrl":"https://music-app-manifest-tutorial.vercel.app/api/icon","button":{"title":"🎵 Tutorial Demo","action":{"type":"launch_miniapp","name":"Music App Manifest","url":"https://music-app-manifest-tutorial.vercel.app","splashImageUrl":"https://music-app-manifest-tutorial.vercel.app/api/splash","splashBackgroundColor":"#22c55e"}}}'
         />
         <style>{`
 html {
@@ -56,3 +59,9 @@ html {
     </html>
   )
 }
+```
+
+**Just copy this entire thing and replace your whole layout.tsx file!** Then commit and wait for Vercel to redeploy. 🎵
+
+Confidence? 10
+RAG? Yes
